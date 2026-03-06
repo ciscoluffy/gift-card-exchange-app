@@ -11,10 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Each trade gets ONE conversation
         Schema::create('conversations', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('trade_id')->constrained();
+            $table->foreignId('participant_one')->constrained('users'); // Seller
+            $table->foreignId('participant_two')->constrained('users'); // Buyer
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('last_message_at')->nullable();
             $table->timestamps();
+
+            $table->unique('trade_id'); // Only one conversation per trade
         });
+
+
     }
 
     /**

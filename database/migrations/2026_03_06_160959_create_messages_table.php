@@ -13,7 +13,17 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->foreignId('conversation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('sender_id')->constrained('users');
+            $table->text('body')->nullable();
+            $table->string('type')->default('text'); // text, image, system
+            $table->json('attachments')->nullable();
+            $table->boolean('is_read')->default(false);
+            $table->timestamp('read_at')->nullable();
+            $table->boolean('is_system_message')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
